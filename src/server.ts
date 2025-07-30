@@ -46,6 +46,7 @@ app.post("/interview", async (req: Request, res: Response) => {
 
     const aiReply = response.message?.content || "";
     SESSION_CACHE[session_id].push({ role: "assistant", content: aiReply });
+    console.log("AI reply:", aiReply);
 
     res.json({ reply: aiReply });
   } catch (err: any) {
