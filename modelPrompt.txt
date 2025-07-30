@@ -1,0 +1,16 @@
+{
+Problem:'''
+Write a function in Python that checks whether a given number is a prime number. A prime number is greater than 1 and divisible only by 1 and itself.
+'''
+Student Code:'''
+    def is_prime(n):
+    if n == 1:
+        return False
+    for i in range(2, n):
+        if n % i == 0:
+            return False
+        else:
+            return True
+'''
+
+}
