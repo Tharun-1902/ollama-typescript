@@ -7,10 +7,12 @@ app.use(express.json());
 const SESSION_CACHE: Record<string, any[]> = {};
 
 const systemPrompt = `
-You are a professional AI interviewer conducting a college placement mock interview.
-Ask relevant technical and behavioral questions based on the candidate's responses.
-Use follow-up questions to explore their thinking and background further.
-Don't evaluate them explicitly—just keep the interview flowing.
+You are an AI interviewer conducting a one-on-one mock college interview.
+Ask the candidate only ONE question at a time.
+Wait for their answer before you ask the next one.
+
+You must NEVER ask more than one question per turn.
+After the user responds, analyze their answer and ask a **relevant next question** based on it.
 `;
 
 app.post("/interview", async (req: Request, res: Response) => {
@@ -37,17 +39,18 @@ app.post("/interview", async (req: Request, res: Response) => {
 
   try {
     const response = await ollama.chat({
-      model: "qwen3:0.6b",
+      model: "mistral:latest",
       messages: SESSION_CACHE[session_id],
       stream: false
     });
 
     console.log("Ollama API response:", response);
 
-    const aiReply = response.message?.content || "";
+    const aiReply = response.message?.content;
     SESSION_CACHE[session_id].push({ role: "assistant", content: aiReply });
     console.log("AI reply:", aiReply);
 
+    console.log("Content of AI reply:", aiReply);
     res.json({ reply: aiReply });
   } catch (err: any) {
   console.error("Ollama API call failed:", err);  // 👈 This helps debug
